@@ -56,7 +56,14 @@ import {
   Mail,
   Calendar,
   Loader2,
+  MoreVertical,
 } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { AddMemberForm } from "@/components/add-member-form";
 import { MemberProfile } from "@/components/member-profile";
 import { useToast } from "@/hooks/use-toast";
@@ -375,21 +382,22 @@ export function MemberManagement() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold">Member Management</h1>
-          <p className="text-muted-foreground">
+      {/* Header Section - Responsive */}
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="space-y-1">
+          <h1 className="text-2xl font-bold sm:text-3xl">Member Management</h1>
+          <p className="text-sm text-muted-foreground sm:text-base">
             Manage your gym members and their information
           </p>
         </div>
         <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
           <DialogTrigger asChild>
-            <Button>
+            <Button className="w-full sm:w-auto">
               <Plus className="h-4 w-4 mr-2" />
               Add Member
             </Button>
           </DialogTrigger>
-          <DialogContent className="max-w-2xl">
+          <DialogContent className="w-[95vw] max-w-2xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>Add New Member</DialogTitle>
               <DialogDescription>
@@ -413,7 +421,7 @@ export function MemberManagement() {
 
       {/* Edit Member Dialog */}
       <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-        <DialogContent className="max-w-2xl">
+        <DialogContent className="w-[95vw] max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Edit Member</DialogTitle>
             <DialogDescription>
@@ -448,52 +456,59 @@ export function MemberManagement() {
         </DialogContent>
       </Dialog>
 
-      {/* Stats Cards */}
-      <div className="grid gap-4 md:grid-cols-4">
+      {/* Stats Cards - Responsive Grid */}
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <Card>
-          <CardHeader className="pb-2">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Members</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold">{members.length}</div>
+            <div className="text-2xl font-bold sm:text-3xl">
+              {members.length}
+            </div>
+            <p className="text-xs text-muted-foreground">
+              All registered members
+            </p>
           </CardContent>
         </Card>
         <Card>
-          <CardHeader className="pb-2">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
               Active Members
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold ">
+            <div className="text-2xl font-bold sm:text-3xl">
               {
                 members.filter((m) => m.status?.toLowerCase() === "active")
                   .length
               }
             </div>
+            <p className="text-xs text-muted-foreground">Currently active</p>
           </CardContent>
         </Card>
         <Card>
-          <CardHeader className="pb-2">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Expired</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold">
+            <div className="text-2xl font-bold sm:text-3xl">
               {
                 members.filter((m) => m.status?.toLowerCase() === "expired")
                   .length
               }
             </div>
+            <p className="text-xs text-muted-foreground">Memberships expired</p>
           </CardContent>
         </Card>
         <Card>
-          <CardHeader className="pb-2">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
               New This Month
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold">
+            <div className="text-2xl font-bold sm:text-3xl">
               {
                 members.filter((m) => {
                   if (!m.startDate) return false;
@@ -506,6 +521,7 @@ export function MemberManagement() {
                 }).length
               }
             </div>
+            <p className="text-xs text-muted-foreground">Joined this month</p>
           </CardContent>
         </Card>
       </div>
@@ -517,19 +533,22 @@ export function MemberManagement() {
           <CardDescription>Search and filter your gym members</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-            <div className="flex flex-1 gap-4">
-              <div className="relative flex-1 max-w-sm">
-                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                <Input
-                  placeholder="Search members..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10"
-                />
-              </div>
+          <div className="space-y-4">
+            {/* Search Bar */}
+            <div className="relative w-full sm:max-w-md">
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              <Input
+                placeholder="Search members by name or email..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10"
+              />
+            </div>
+
+            {/* Filters */}
+            <div className="flex flex-col gap-3 sm:flex-row">
               <Select value={statusFilter} onValueChange={setStatusFilter}>
-                <SelectTrigger className="w-32">
+                <SelectTrigger className="w-full sm:w-40">
                   <SelectValue placeholder="Status" />
                 </SelectTrigger>
                 <SelectContent>
@@ -540,7 +559,7 @@ export function MemberManagement() {
                 </SelectContent>
               </Select>
               <Select value={planFilter} onValueChange={setPlanFilter}>
-                <SelectTrigger className="w-32">
+                <SelectTrigger className="w-full sm:w-40">
                   <SelectValue placeholder="Plan" />
                 </SelectTrigger>
                 <SelectContent>
@@ -553,133 +572,300 @@ export function MemberManagement() {
             </div>
           </div>
 
-          {/* Members Table */}
+          {/* Members Display - Table for desktop, Cards for mobile */}
           <div className="mt-6">
             {isDeleteLoading ? (
               <div className="flex justify-center items-center py-8">
                 <Loader2 className="animate-spin h-8 w-8 text-primary" />
               </div>
             ) : (
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Member</TableHead>
-                    <TableHead>Contact</TableHead>
-                    <TableHead>Plan</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Join Date</TableHead>
-                    <TableHead>Last Payment</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {filteredMembers.map((member) => (
-                    <TableRow key={member.id}>
-                      <TableCell>
-                        <div className="flex items-center gap-3">
-                          <Avatar className="h-8 w-8">
-                            <AvatarImage
-                              src={member.imageUrl || "/placeholder.svg"}
-                              alt={member.fullName}
-                            />
-                            <AvatarFallback>
-                              {member.fullName
-                                .split(" ")
-                                .map((n: string) => n[0])
-                                .join("")}
-                            </AvatarFallback>
-                          </Avatar>
-                          <div>
-                            <div className="font-medium">{member.fullName}</div>
-                            <div className="text-sm text-muted-foreground">
-                              ID: {member.id}
+              <>
+                {/* Desktop Table View */}
+                <div className="hidden lg:block">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Member</TableHead>
+                        <TableHead>Contact</TableHead>
+                        <TableHead>Plan</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead>Join Date</TableHead>
+                        <TableHead>Last Payment</TableHead>
+                        <TableHead className="text-right">Actions</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {filteredMembers.map((member) => (
+                        <TableRow key={member.id}>
+                          <TableCell>
+                            <div className="flex items-center gap-3">
+                              <Avatar className="h-8 w-8">
+                                <AvatarImage
+                                  src={member.imageUrl || "/placeholder.svg"}
+                                  alt={member.fullName}
+                                />
+                                <AvatarFallback>
+                                  {member.fullName
+                                    .split(" ")
+                                    .map((n: string) => n[0])
+                                    .join("")}
+                                </AvatarFallback>
+                              </Avatar>
+                              <div>
+                                <div className="font-medium">
+                                  {member.fullName}
+                                </div>
+                                <div className="text-sm text-muted-foreground">
+                                  ID: {member.id}
+                                </div>
+                              </div>
                             </div>
-                          </div>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <div className="space-y-1">
-                          <div className="flex items-center gap-2 text-sm">
-                            <Mail className="h-3 w-3" />
-                            {member.email}
-                          </div>
-                          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                            <Phone className="h-3 w-3" />
-                            {member.phoneNumber}
-                          </div>
-                        </div>
-                      </TableCell>
-                      <TableCell>{getPlanBadge(member.planName)}</TableCell>
-                      <TableCell>{getStatusBadge(member.status)}</TableCell>
-                      <TableCell>
-                        <div className="flex items-center gap-2 text-sm">
-                          <Calendar className="h-3 w-3" />
-                          {member.startDate
-                            ? new Date(member.startDate).toLocaleDateString()
-                            : "-"}
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        {member.lastPayment
-                          ? new Date(member.lastPayment).toLocaleDateString()
-                          : "-"}
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <div className="flex items-center justify-end gap-2">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => handleViewProfile(member)}
-                          >
-                            <Eye className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => handleEditMember(member)}
-                          >
-                            <Edit className="h-4 w-4" />
-                          </Button>
-                          <AlertDialog>
-                            <AlertDialogTrigger asChild>
+                          </TableCell>
+                          <TableCell>
+                            <div className="space-y-1">
+                              <div className="flex items-center gap-2 text-sm">
+                                <Mail className="h-3 w-3" />
+                                {member.email}
+                              </div>
+                              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                <Phone className="h-3 w-3" />
+                                {member.phoneNumber}
+                              </div>
+                            </div>
+                          </TableCell>
+                          <TableCell>{getPlanBadge(member.planName)}</TableCell>
+                          <TableCell>{getStatusBadge(member.status)}</TableCell>
+                          <TableCell>
+                            <div className="flex items-center gap-2 text-sm">
+                              <Calendar className="h-3 w-3" />
+                              {member.startDate
+                                ? new Date(
+                                    member.startDate
+                                  ).toLocaleDateString()
+                                : "-"}
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            {member.lastPayment
+                              ? new Date(
+                                  member.lastPayment
+                                ).toLocaleDateString()
+                              : "-"}
+                          </TableCell>
+                          <TableCell className="text-right">
+                            <div className="flex items-center justify-end gap-2">
                               <Button
                                 variant="ghost"
                                 size="sm"
-                                className="text-destructive hover:text-white"
+                                onClick={() => handleViewProfile(member)}
                               >
-                                <Trash2 className="h-4 w-4" />
+                                <Eye className="h-4 w-4" />
                               </Button>
-                            </AlertDialogTrigger>
-                            <AlertDialogContent>
-                              <AlertDialogHeader>
-                                <AlertDialogTitle>
-                                  Are you absolutely sure?
-                                </AlertDialogTitle>
-                                <AlertDialogDescription>
-                                  This action will remove {member.fullName} from
-                                  the member list. This action can be undone by
-                                  refreshing the page or re-adding the member.
-                                </AlertDialogDescription>
-                              </AlertDialogHeader>
-                              <AlertDialogFooter>
-                                <AlertDialogCancel className="bg-white hover:bg-gray-100 hover:text-black transition-all cursor-pointer">
-                                  Cancel
-                                </AlertDialogCancel>
-                                <AlertDialogAction
-                                  onClick={() => handleDeleteMember(member.id)}
-                                  className="bg-destructive text-destructive-foreground hover:bg-destructive/90 cursor-pointer"
-                                >
-                                  Delete
-                                </AlertDialogAction>
-                              </AlertDialogFooter>
-                            </AlertDialogContent>
-                          </AlertDialog>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => handleEditMember(member)}
+                              >
+                                <Edit className="h-4 w-4" />
+                              </Button>
+                              <AlertDialog>
+                                <AlertDialogTrigger asChild>
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    className="text-destructive hover:text-white"
+                                  >
+                                    <Trash2 className="h-4 w-4" />
+                                  </Button>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent className="w-[95vw] max-w-md">
+                                  <AlertDialogHeader>
+                                    <AlertDialogTitle>
+                                      Are you absolutely sure?
+                                    </AlertDialogTitle>
+                                    <AlertDialogDescription>
+                                      This action will remove {member.fullName}{" "}
+                                      from the member list. This action can be
+                                      undone by refreshing the page or re-adding
+                                      the member.
+                                    </AlertDialogDescription>
+                                  </AlertDialogHeader>
+                                  <AlertDialogFooter className="flex-col gap-2 sm:flex-row">
+                                    <AlertDialogCancel className="bg-white hover:bg-gray-100 hover:text-black transition-all cursor-pointer">
+                                      Cancel
+                                    </AlertDialogCancel>
+                                    <AlertDialogAction
+                                      onClick={() =>
+                                        handleDeleteMember(member.id)
+                                      }
+                                      className="bg-destructive text-destructive-foreground hover:bg-destructive/90 cursor-pointer"
+                                    >
+                                      Delete
+                                    </AlertDialogAction>
+                                  </AlertDialogFooter>
+                                </AlertDialogContent>
+                              </AlertDialog>
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+
+                {/* Mobile Card View */}
+                <div className="space-y-4 lg:hidden">
+                  {filteredMembers.map((member) => (
+                    <Card key={member.id} className="border rounded-lg p-4">
+                      <div className="space-y-3">
+                        {/* Member Info */}
+                        <div className="flex items-start justify-between">
+                          <div className="flex items-center gap-3 flex-1 min-w-0">
+                            <Avatar className="h-10 w-10 flex-shrink-0">
+                              <AvatarImage
+                                src={member.imageUrl || "/placeholder.svg"}
+                                alt={member.fullName}
+                              />
+                              <AvatarFallback>
+                                {member.fullName
+                                  .split(" ")
+                                  .map((n: string) => n[0])
+                                  .join("")}
+                              </AvatarFallback>
+                            </Avatar>
+                            <div className="min-w-0 flex-1">
+                              <div className="font-medium truncate">
+                                {member.fullName}
+                              </div>
+                              <div className="text-sm text-muted-foreground">
+                                ID: {member.id}
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Actions Dropdown */}
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="h-8 w-8 p-0 flex-shrink-0"
+                              >
+                                <MoreVertical className="h-4 w-4" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                              <DropdownMenuItem
+                                onClick={() => handleViewProfile(member)}
+                              >
+                                <Eye className="h-4 w-4 mr-2" />
+                                View Profile
+                              </DropdownMenuItem>
+                              <DropdownMenuItem
+                                onClick={() => handleEditMember(member)}
+                              >
+                                <Edit className="h-4 w-4 mr-2" />
+                                Edit
+                              </DropdownMenuItem>
+                              <AlertDialog>
+                                <AlertDialogTrigger asChild>
+                                  <DropdownMenuItem
+                                    className="text-destructive"
+                                    onSelect={(e) => e.preventDefault()}
+                                  >
+                                    <Trash2 className="h-4 w-4 mr-2" />
+                                    Delete
+                                  </DropdownMenuItem>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent className="w-[95vw] max-w-md">
+                                  <AlertDialogHeader>
+                                    <AlertDialogTitle>
+                                      Are you absolutely sure?
+                                    </AlertDialogTitle>
+                                    <AlertDialogDescription>
+                                      This action will remove {member.fullName}{" "}
+                                      from the member list. This action can be
+                                      undone by refreshing the page or re-adding
+                                      the member.
+                                    </AlertDialogDescription>
+                                  </AlertDialogHeader>
+                                  <AlertDialogFooter className="flex-col gap-2 sm:flex-row">
+                                    <AlertDialogCancel className="bg-white hover:bg-gray-100 hover:text-black transition-all cursor-pointer">
+                                      Cancel
+                                    </AlertDialogCancel>
+                                    <AlertDialogAction
+                                      onClick={() =>
+                                        handleDeleteMember(member.id)
+                                      }
+                                      className="bg-destructive text-destructive-foreground hover:bg-destructive/90 cursor-pointer"
+                                    >
+                                      Delete
+                                    </AlertDialogAction>
+                                  </AlertDialogFooter>
+                                </AlertDialogContent>
+                              </AlertDialog>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
                         </div>
-                      </TableCell>
-                    </TableRow>
+
+                        {/* Status and Plan Badges */}
+                        <div className="flex flex-wrap gap-2">
+                          {getStatusBadge(member.status)}
+                          {getPlanBadge(member.planName)}
+                        </div>
+
+                        {/* Contact Info */}
+                        <div className="space-y-2">
+                          <div className="flex justify-between items-start">
+                            <span className="text-sm text-muted-foreground">
+                              Email:
+                            </span>
+                            <span className="text-sm font-medium text-right truncate ml-2 max-w-[60%]">
+                              {member.email}
+                            </span>
+                          </div>
+                          <div className="flex justify-between items-center">
+                            <span className="text-sm text-muted-foreground">
+                              Phone:
+                            </span>
+                            <span className="text-sm font-medium">
+                              {member.phoneNumber}
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* Dates */}
+                        <div className="space-y-2">
+                          <div className="flex justify-between items-center">
+                            <span className="text-sm text-muted-foreground">
+                              Join Date:
+                            </span>
+                            <span className="text-sm">
+                              {member.startDate
+                                ? new Date(
+                                    member.startDate
+                                  ).toLocaleDateString()
+                                : "-"}
+                            </span>
+                          </div>
+                          <div className="flex justify-between items-center">
+                            <span className="text-sm text-muted-foreground">
+                              Last Payment:
+                            </span>
+                            <span className="text-sm">
+                              {member.lastPayment
+                                ? new Date(
+                                    member.lastPayment
+                                  ).toLocaleDateString()
+                                : "-"}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </Card>
                   ))}
-                </TableBody>
-              </Table>
+                </div>
+              </>
             )}
           </div>
         </CardContent>
@@ -687,7 +873,7 @@ export function MemberManagement() {
 
       {/* Member Profile Dialog */}
       <Dialog open={isProfileDialogOpen} onOpenChange={setIsProfileDialogOpen}>
-        <DialogContent className="max-h-[90vh] overflow-y-auto">
+        <DialogContent className="w-[95vw] max-w-4xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Member Profile</DialogTitle>
             <DialogDescription>

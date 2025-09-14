@@ -318,9 +318,11 @@ export function FinancialManagement() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Financial Management</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold">
+            Financial Management
+          </h1>
           <p className="text-muted-foreground">
             Manage payments and track financial performance
           </p>
@@ -330,12 +332,12 @@ export function FinancialManagement() {
           onOpenChange={setIsAddPaymentDialogOpen}
         >
           <DialogTrigger asChild>
-            <Button>
+            <Button className="w-full sm:w-auto">
               <Plus className="h-4 w-4 mr-2" />
               Add Payment
             </Button>
           </DialogTrigger>
-          <DialogContent className="max-w-2xl">
+          <DialogContent className="max-w-2xl w-[95vw] max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>Add New Payment</DialogTitle>
               <DialogDescription>
@@ -348,14 +350,14 @@ export function FinancialManagement() {
       </div>
 
       {/* Financial Stats Cards */}
-      <div className="grid gap-4 md:grid-cols-4">
+      <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
             <PiggyBank className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold">
+            <div className="text-2xl sm:text-3xl font-bold">
               LKR {totalRevenue.toFixed(2)}
             </div>
             <p className="text-xs text-muted-foreground">All time revenue</p>
@@ -367,7 +369,7 @@ export function FinancialManagement() {
             <Calendar className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold">
+            <div className="text-2xl sm:text-3xl font-bold">
               LKR {monthlyRevenue.toFixed(2)}
             </div>
             <p className="text-xs text-muted-foreground">
@@ -381,7 +383,9 @@ export function FinancialManagement() {
             <CreditCard className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold">{payments.length}</div>
+            <div className="text-2xl sm:text-3xl font-bold">
+              {payments.length}
+            </div>
             <p className="text-xs text-muted-foreground">
               {completedPayments} completed
             </p>
@@ -393,7 +397,7 @@ export function FinancialManagement() {
             <TrendingUp className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold">
+            <div className="text-2xl sm:text-3xl font-bold">
               LKR {averagePayment.toFixed(2)}
             </div>
             <p className="text-xs text-muted-foreground">Per transaction</p>
@@ -403,7 +407,7 @@ export function FinancialManagement() {
 
       {/* Tabs for Payment Records and Recent Payments */}
       <Tabs defaultValue="records" className="space-y-4">
-        <TabsList>
+        <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="records">Payment Records</TabsTrigger>
           <TabsTrigger value="recent">Recent Payments</TabsTrigger>
         </TabsList>
@@ -419,10 +423,10 @@ export function FinancialManagement() {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                <div className="relative max-w-md">
+                <div className="relative w-full sm:max-w-md">
                   <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                   <Input
-                    placeholder="Search members by name or email..."
+                    placeholder="Search members..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className="pl-10"
@@ -438,10 +442,10 @@ export function FinancialManagement() {
                       {filteredMembers.map((member) => (
                         <div
                           key={member.id}
-                          className="flex items-center justify-between p-3 border rounded-lg hover:bg-muted/50"
+                          className="flex flex-col sm:flex-row sm:items-center justify-between p-3 border rounded-lg hover:bg-muted/50 gap-3"
                         >
-                          <div className="flex items-center gap-3">
-                            <Avatar className="h-8 w-8">
+                          <div className="flex items-center gap-3 min-w-0 flex-1">
+                            <Avatar className="h-8 w-8 flex-shrink-0">
                               <AvatarImage
                                 src={member.avatar || "/placeholder.svg"}
                                 alt={member.name}
@@ -454,22 +458,32 @@ export function FinancialManagement() {
                                   .join("") || "?"}
                               </AvatarFallback>
                             </Avatar>
-                            <div>
-                              <div className="font-medium">{member.name}</div>
-                              <div className="text-sm text-muted-foreground">
+                            <div className="min-w-0 flex-1">
+                              <div className="font-medium truncate">
+                                {member.name}
+                              </div>
+                              <div className="text-sm text-muted-foreground truncate">
                                 {member.email}
                               </div>
                             </div>
                           </div>
-                          <div className="flex items-center gap-2">
-                            <Badge variant="outline">{member.plan}</Badge>
+                          <div className="flex items-center gap-2 flex-shrink-0">
+                            <Badge
+                              variant="outline"
+                              className="whitespace-nowrap"
+                            >
+                              {member.plan}
+                            </Badge>
                             <Button
                               variant="outline"
                               size="sm"
                               onClick={() => handleViewPaymentHistory(member)}
+                              className="whitespace-nowrap"
                             >
-                              <Eye className="h-4 w-4 mr-2" />
-                              View History
+                              <Eye className="h-4 w-4 sm:mr-2" />
+                              <span className="hidden sm:inline">
+                                View History
+                              </span>
                             </Button>
                           </div>
                         </div>
@@ -493,19 +507,19 @@ export function FinancialManagement() {
         <TabsContent value="recent" className="space-y-4">
           <Card>
             <CardHeader>
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                   <CardTitle>Recent Payments</CardTitle>
                   <CardDescription>
                     All payment transactions and their details
                   </CardDescription>
                 </div>
-                <div className="flex gap-2">
+                <div className="flex flex-col sm:flex-row gap-2">
                   <Select
                     value={paymentMethodFilter}
                     onValueChange={setPaymentMethodFilter}
                   >
-                    <SelectTrigger className="w-40">
+                    <SelectTrigger className="w-full sm:w-40">
                       <SelectValue placeholder="Method" />
                     </SelectTrigger>
                     <SelectContent>
@@ -517,7 +531,7 @@ export function FinancialManagement() {
                     </SelectContent>
                   </Select>
                   <Select value={statusFilter} onValueChange={setStatusFilter}>
-                    <SelectTrigger className="w-32">
+                    <SelectTrigger className="w-full sm:w-32">
                       <SelectValue placeholder="Status" />
                     </SelectTrigger>
                     <SelectContent>
@@ -530,46 +544,112 @@ export function FinancialManagement() {
                 </div>
               </div>
             </CardHeader>
-            <CardContent>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Payment ID</TableHead>
-                    <TableHead>Member</TableHead>
-                    <TableHead>Period</TableHead>
-                    <TableHead>Amount</TableHead>
-                    <TableHead>Method</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Date</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {mappedPayments.map((payment) => (
-                    <TableRow key={payment.id}>
-                      <TableCell className="font-medium">
-                        {payment.id}
-                      </TableCell>
-                      <TableCell>{payment.memberName}</TableCell>
-                      <TableCell>{payment.period}</TableCell>
-                      <TableCell className="font-medium">
-                        LKR {(Number(payment.amount) || 0).toFixed(2)}
-                      </TableCell>
-                      <TableCell>
+            <CardContent className="p-0">
+              {/* Desktop Table */}
+              <div className="hidden lg:block">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Payment ID</TableHead>
+                      <TableHead>Member</TableHead>
+                      <TableHead>Period</TableHead>
+                      <TableHead>Amount</TableHead>
+                      <TableHead>Method</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead>Date</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {mappedPayments.map((payment) => (
+                      <TableRow key={payment.id}>
+                        <TableCell className="font-medium">
+                          {payment.id}
+                        </TableCell>
+                        <TableCell>{payment.memberName}</TableCell>
+                        <TableCell>{payment.period}</TableCell>
+                        <TableCell className="font-medium">
+                          LKR {(Number(payment.amount) || 0).toFixed(2)}
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center gap-2">
+                            {getPaymentMethodIcon(payment.method)}
+                            <span className="text-sm">{payment.method}</span>
+                          </div>
+                        </TableCell>
+                        <TableCell>{getStatusBadge(payment.status)}</TableCell>
+                        <TableCell>
+                          {payment.date
+                            ? new Date(payment.date).toLocaleDateString()
+                            : ""}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+
+              {/* Mobile Cards */}
+              <div className="lg:hidden p-4 space-y-4">
+                {mappedPayments.map((payment) => (
+                  <div
+                    key={payment.id}
+                    className="border rounded-lg p-4 space-y-3"
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="font-medium text-sm">{payment.id}</span>
+                      {getStatusBadge(payment.status)}
+                    </div>
+
+                    <div className="space-y-2">
+                      <div className="flex justify-between items-start">
+                        <span className="text-sm text-muted-foreground">
+                          Member:
+                        </span>
+                        <span className="text-sm font-medium text-right">
+                          {payment.memberName}
+                        </span>
+                      </div>
+
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-muted-foreground">
+                          Amount:
+                        </span>
+                        <span className="text-sm font-bold">
+                          LKR {(Number(payment.amount) || 0).toFixed(2)}
+                        </span>
+                      </div>
+
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-muted-foreground">
+                          Period:
+                        </span>
+                        <span className="text-sm">{payment.period}</span>
+                      </div>
+
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-muted-foreground">
+                          Method:
+                        </span>
                         <div className="flex items-center gap-2">
                           {getPaymentMethodIcon(payment.method)}
                           <span className="text-sm">{payment.method}</span>
                         </div>
-                      </TableCell>
-                      <TableCell>{getStatusBadge(payment.status)}</TableCell>
-                      <TableCell>
-                        {payment.date
-                          ? new Date(payment.date).toLocaleDateString()
-                          : ""}
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+                      </div>
+
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-muted-foreground">
+                          Date:
+                        </span>
+                        <span className="text-sm">
+                          {payment.date
+                            ? new Date(payment.date).toLocaleDateString()
+                            : ""}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </CardContent>
           </Card>
         </TabsContent>
@@ -667,7 +747,7 @@ function CustomDialog({ open, onOpenChange, children }: CustomDialogProps) {
       {/* Dialog Content */}
       <div
         ref={dialogRef}
-        className="relative z-10 w-full max-w-6xl max-h-[90vh] animate-in fade-in-0 zoom-in-95 slide-in-from-bottom-4 duration-200"
+        className="relative z-10 w-full max-w-6xl max-h-[90vh] mx-auto animate-in fade-in-0 zoom-in-95 slide-in-from-bottom-4 duration-200"
         onClick={(e) => e.stopPropagation()}
         role="dialog"
         aria-modal="true"

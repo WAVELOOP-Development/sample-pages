@@ -1,5 +1,5 @@
-@import 'tailwindcss';
-@import 'tw-animate-css';
+@import "tailwindcss";
+@import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -119,5 +119,52 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+@layer utilities {
+  /* Navigation z-index layers */
+  .z-navbar {
+    z-index: 9999;
+  }
+
+  .z-sidebar {
+    z-index: 9998;
+  }
+
+  .z-modal {
+    z-index: 10000;
+  }
+
+  .z-tooltip {
+    z-index: 10001;
+  }
+
+  .z-dropdown {
+    z-index: 9997;
+  }
+
+  /* Ensure sidebar and navbar are always on top */
+  [data-sidebar] {
+    z-index: 9998 !important;
+  }
+
+  [data-sidebar-header] {
+    z-index: 9999 !important;
+  }
+
+  /* Mobile header fixed positioning */
+  .mobile-header-fixed {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 9999;
+    backdrop-filter: blur(8px);
+    background-color: rgba(255, 255, 255, 0.95);
+  }
+
+  .dark .mobile-header-fixed {
+    background-color: rgba(0, 0, 0, 0.95);
   }
 }

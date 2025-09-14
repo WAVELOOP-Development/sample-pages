@@ -134,8 +134,15 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
     <TooltipProvider>
       <SidebarProvider>
         <div className="flex min-h-screen w-full">
-          <Sidebar className="border-r" collapsible="icon">
-            <SidebarHeader className="border-b px-6 py-4 group-data-[collapsible=icon]:px-2">
+          <Sidebar
+            className="border-r z-sidebar"
+            collapsible="icon"
+            data-sidebar
+          >
+            <SidebarHeader
+              className="border-b px-6 py-4 group-data-[collapsible=icon]:px-2 z-navbar"
+              data-sidebar-header
+            >
               <div className="flex items-center gap-3">
                 <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary group-data-[collapsible=icon]:hidden">
                   <Dumbbell className="h-4 w-4 text-primary-foreground" />
@@ -146,7 +153,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                     Admin Dashboard
                   </p>
                 </div>
-                <SidebarTrigger className="ml-auto group-data-[collapsible=icon]:ml-0 group-data-[collapsible=icon]:mx-auto" />
+                <SidebarTrigger className="ml-auto group-data-[collapsible=icon]:ml-0 group-data-[collapsible=icon]:mx-auto hidden md:flex" />
               </div>
             </SidebarHeader>
 
@@ -182,6 +189,19 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
           </Sidebar>
 
           <div className="flex-1 flex flex-col">
+            {/* Mobile header - only visible when sidebar is collapsed/hidden */}
+            <header className="md:hidden border-b bg-background px-6 py-3 flex items-center justify-between">
+              <div className="flex items-center justify-between w-full gap-3">
+                <div className="flex items-center gap-2">
+                  <div className="flex h-6 w-6 items-center justify-center rounded bg-primary">
+                    <Dumbbell className="h-3 w-3 text-primary-foreground" />
+                  </div>
+                  <h2 className="text-lg font-semibold">{gymName}</h2>
+                </div>
+                <SidebarTrigger />
+              </div>
+            </header>
+
             <main className="flex-1 p-6">{children}</main>
           </div>
         </div>

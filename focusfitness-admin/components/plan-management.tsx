@@ -245,8 +245,8 @@ export function PlanManagement() {
     if (selectedPlan) {
       setPlanTypes(
         planTypes.map((p) =>
-          p.id === selectedPlan.id ? { ...planData, id: selectedPlan.id } : p,
-        ),
+          p.id === selectedPlan.id ? { ...planData, id: selectedPlan.id } : p
+        )
       );
     } else {
       const newPlan = { ...planData, id: (planTypes.length + 1).toString() };
@@ -268,11 +268,11 @@ export function PlanManagement() {
               daysUntilExpiry: Math.ceil(
                 (new Date(renewalData.endDate).getTime() -
                   new Date().getTime()) /
-                  (1000 * 60 * 60 * 24),
+                  (1000 * 60 * 60 * 24)
               ),
             }
-          : plan,
-      ),
+          : plan
+      )
     );
     setIsRenewalFormOpen(false);
     setSelectedMemberPlan(null);
@@ -281,13 +281,13 @@ export function PlanManagement() {
   // Calculate statistics
   const totalMembers = memberPlans.length;
   const activeMembers = memberPlans.filter(
-    (plan) => plan.status === "Active",
+    (plan) => plan.status === "Active"
   ).length;
   const expiringSoon = memberPlans.filter(
-    (plan) => plan.daysUntilExpiry <= 30 && plan.daysUntilExpiry > 0,
+    (plan) => plan.daysUntilExpiry <= 30 && plan.daysUntilExpiry > 0
   ).length;
   const expired = memberPlans.filter(
-    (plan) => plan.status === "Expired",
+    (plan) => plan.status === "Expired"
   ).length;
   const totalRevenue = memberPlans
     .filter((plan) => plan.status === "Active")
@@ -298,21 +298,21 @@ export function PlanManagement() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Plan Management</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold">Plan Management</h1>
           <p className="text-muted-foreground">
             Manage membership plans and track renewals
           </p>
         </div>
         <Dialog open={isPlanFormOpen} onOpenChange={setIsPlanFormOpen}>
           <DialogTrigger asChild>
-            <Button onClick={handleAddPlan}>
+            <Button onClick={handleAddPlan} className="w-full sm:w-auto">
               <Plus className="h-4 w-4 mr-2" />
               Add Plan Type
             </Button>
           </DialogTrigger>
-          <DialogContent className="max-w-2xl">
+          <DialogContent className="w-[95vw] max-w-2xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>
                 {selectedPlan ? "Edit Plan Type" : "Add New Plan Type"}
@@ -329,14 +329,14 @@ export function PlanManagement() {
       </div>
 
       {/* Plan Statistics Cards */}
-      <div className="grid gap-4 md:grid-cols-4">
+      <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Members</CardTitle>
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold">{totalMembers}</div>
+            <div className="text-3xl sm:text-3xl font-bold">{totalMembers}</div>
             <p className="text-xs text-muted-foreground">
               {activeMembers} active
             </p>
@@ -348,9 +348,7 @@ export function PlanManagement() {
             <AlertTriangle className="h-4 w-4 text-yellow-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-yellow-600">
-              {expiringSoon}
-            </div>
+            <div className="text-3xl sm:text-3xl font-bold">{expiringSoon}</div>
             <p className="text-xs text-muted-foreground">Within 30 days</p>
           </CardContent>
         </Card>
@@ -360,7 +358,7 @@ export function PlanManagement() {
             <Clock className="h-4 w-4 text-red-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-red-600">{expired}</div>
+            <div className="text-3xl sm:text-3xl font-bold">{expired}</div>
             <p className="text-xs text-muted-foreground">Need renewal</p>
           </CardContent>
         </Card>
@@ -370,7 +368,9 @@ export function PlanManagement() {
             <LandPlot className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold">{mockPlanTypes.length}</div>
+            <div className="text-3xl sm:text-3xl font-bold">
+              {mockPlanTypes.length}
+            </div>
             <p className="text-xs text-muted-foreground">Total plans</p>
           </CardContent>
         </Card>
@@ -378,7 +378,7 @@ export function PlanManagement() {
 
       {/* Tabs for Plan Types and Member Plans */}
       <Tabs defaultValue="member-plans" className="space-y-4">
-        <TabsList>
+        <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="member-plans">Member Plans</TabsTrigger>
           <TabsTrigger value="plan-types">Plan Types</TabsTrigger>
         </TabsList>
@@ -393,19 +393,19 @@ export function PlanManagement() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between mb-6">
-                <div className="flex flex-1 gap-4">
-                  <div className="relative flex-1 max-w-sm">
-                    <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                    <Input
-                      placeholder="Search members..."
-                      value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
-                      className="pl-10"
-                    />
-                  </div>
+              <div className="space-y-4 mb-6">
+                <div className="relative w-full sm:max-w-sm">
+                  <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                  <Input
+                    placeholder="Search members..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="pl-10"
+                  />
+                </div>
+                <div className="flex flex-col sm:flex-row gap-2">
                   <Select value={statusFilter} onValueChange={setStatusFilter}>
-                    <SelectTrigger className="w-40">
+                    <SelectTrigger className="w-full sm:w-40">
                       <SelectValue placeholder="Status" />
                     </SelectTrigger>
                     <SelectContent>
@@ -421,7 +421,7 @@ export function PlanManagement() {
                     value={planTypeFilter}
                     onValueChange={setPlanTypeFilter}
                   >
-                    <SelectTrigger className="w-32">
+                    <SelectTrigger className="w-full sm:w-32">
                       <SelectValue placeholder="Plan" />
                     </SelectTrigger>
                     <SelectContent>
@@ -436,25 +436,105 @@ export function PlanManagement() {
                 </div>
               </div>
 
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Member</TableHead>
-                    <TableHead>Plan Type</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Start Date</TableHead>
-                    <TableHead>End Date</TableHead>
-                    <TableHead>Days Left</TableHead>
-                    <TableHead>Auto Renew</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {filteredMemberPlans.map((plan) => (
-                    <TableRow key={plan.id}>
-                      <TableCell>
-                        <div className="flex items-center gap-3">
-                          <Avatar className="h-8 w-8">
+              {/* Desktop Table */}
+              <div className="hidden lg:block">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Member</TableHead>
+                      <TableHead>Plan Type</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead>Start Date</TableHead>
+                      <TableHead>End Date</TableHead>
+                      <TableHead>Days Left</TableHead>
+                      <TableHead>Auto Renew</TableHead>
+                      <TableHead className="text-right">Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {filteredMemberPlans.map((plan) => (
+                      <TableRow key={plan.id}>
+                        <TableCell>
+                          <div className="flex items-center gap-3">
+                            <Avatar className="h-8 w-8">
+                              <AvatarImage
+                                src={plan.memberAvatar || "/placeholder.svg"}
+                                alt={plan.memberName}
+                              />
+                              <AvatarFallback>
+                                {plan.memberName
+                                  .split(" ")
+                                  .map((n) => n[0])
+                                  .join("")}
+                              </AvatarFallback>
+                            </Avatar>
+                            <div className="font-medium">{plan.memberName}</div>
+                          </div>
+                        </TableCell>
+                        <TableCell>{getPlanTypeBadge(plan.planType)}</TableCell>
+                        <TableCell>
+                          {getStatusBadge(plan.status, plan.daysUntilExpiry)}
+                        </TableCell>
+                        <TableCell>
+                          {new Date(plan.startDate).toLocaleDateString()}
+                        </TableCell>
+                        <TableCell>
+                          {new Date(plan.endDate).toLocaleDateString()}
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center gap-2">
+                            {plan.daysUntilExpiry > 0 ? (
+                              <span
+                                className={
+                                  plan.daysUntilExpiry <= 30
+                                    ? "text-yellow-600 font-medium"
+                                    : ""
+                                }
+                              >
+                                {plan.daysUntilExpiry} days
+                              </span>
+                            ) : (
+                              <span className="text-red-600 font-medium">
+                                Expired
+                              </span>
+                            )}
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          {plan.autoRenew ? (
+                            <Badge className="bg-green-100 text-green-800 hover:bg-green-100">
+                              <CheckCircle className="h-3 w-3 mr-1" />
+                              Yes
+                            </Badge>
+                          ) : (
+                            <Badge variant="outline">No</Badge>
+                          )}
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleRenewPlan(plan)}
+                          >
+                            <Calendar className="h-4 w-4 mr-2" />
+                            Renew
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+
+              {/* Mobile Cards */}
+              <div className="space-y-4 lg:hidden">
+                {filteredMemberPlans.map((plan) => (
+                  <Card key={plan.id} className="border rounded-lg p-4">
+                    <div className="space-y-3">
+                      {/* Member Info */}
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3 flex-1 min-w-0">
+                          <Avatar className="h-10 w-10 flex-shrink-0">
                             <AvatarImage
                               src={plan.memberAvatar || "/placeholder.svg"}
                               alt={plan.memberName}
@@ -466,69 +546,83 @@ export function PlanManagement() {
                                 .join("")}
                             </AvatarFallback>
                           </Avatar>
-                          <div className="font-medium">{plan.memberName}</div>
+                          <div className="min-w-0 flex-1">
+                            <div className="font-medium truncate">
+                              {plan.memberName}
+                            </div>
+                          </div>
                         </div>
-                      </TableCell>
-                      <TableCell>{getPlanTypeBadge(plan.planType)}</TableCell>
-                      <TableCell>
-                        {getStatusBadge(plan.status, plan.daysUntilExpiry)}
-                      </TableCell>
-                      <TableCell>
-                        {new Date(plan.startDate).toLocaleDateString()}
-                      </TableCell>
-                      <TableCell>
-                        {new Date(plan.endDate).toLocaleDateString()}
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center gap-2">
-                          {plan.daysUntilExpiry > 0 ? (
-                            <span
-                              className={
-                                plan.daysUntilExpiry <= 30
-                                  ? "text-yellow-600 font-medium"
-                                  : ""
-                              }
-                            >
-                              {plan.daysUntilExpiry} days
-                            </span>
-                          ) : (
-                            <span className="text-red-600 font-medium">
-                              Expired
-                            </span>
-                          )}
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        {plan.autoRenew ? (
-                          <Badge className="bg-green-100 text-green-800 hover:bg-green-100">
-                            <CheckCircle className="h-3 w-3 mr-1" />
-                            Yes
-                          </Badge>
-                        ) : (
-                          <Badge variant="outline">No</Badge>
-                        )}
-                      </TableCell>
-                      <TableCell className="text-right">
                         <Button
                           variant="outline"
                           size="sm"
                           onClick={() => handleRenewPlan(plan)}
+                          className="whitespace-nowrap"
                         >
-                          <Calendar className="h-4 w-4 mr-2" />
-                          Renew
+                          <Calendar className="h-4 w-4 sm:mr-2" />
+                          <span className="hidden sm:inline">Renew</span>
                         </Button>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+                      </div>
+
+                      {/* Status and Plan Badges */}
+                      <div className="flex flex-wrap gap-2">
+                        {getStatusBadge(plan.status, plan.daysUntilExpiry)}
+                        {getPlanTypeBadge(plan.planType)}
+                        {plan.autoRenew && (
+                          <Badge className="bg-green-100 text-green-800 hover:bg-green-100">
+                            <CheckCircle className="h-3 w-3 mr-1" />
+                            Auto Renew
+                          </Badge>
+                        )}
+                      </div>
+
+                      {/* Plan Details */}
+                      <div className="space-y-2">
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm text-muted-foreground">
+                            Start Date:
+                          </span>
+                          <span className="text-sm">
+                            {new Date(plan.startDate).toLocaleDateString()}
+                          </span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm text-muted-foreground">
+                            End Date:
+                          </span>
+                          <span className="text-sm">
+                            {new Date(plan.endDate).toLocaleDateString()}
+                          </span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm text-muted-foreground">
+                            Days Left:
+                          </span>
+                          <span
+                            className={`text-sm ${
+                              plan.daysUntilExpiry > 0
+                                ? plan.daysUntilExpiry <= 30
+                                  ? "text-yellow-600 font-medium"
+                                  : ""
+                                : "text-red-600 font-medium"
+                            }`}
+                          >
+                            {plan.daysUntilExpiry > 0
+                              ? `${plan.daysUntilExpiry} days`
+                              : "Expired"}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </Card>
+                ))}
+              </div>
             </CardContent>
           </Card>
         </TabsContent>
 
         {/* Plan Types Tab */}
         <TabsContent value="plan-types" className="space-y-4">
-          <div className="grid gap-6 md:grid-cols-3">
+          <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
             {planTypes.map((plan) => (
               <Card key={plan.id} className="relative">
                 <CardHeader>
@@ -546,7 +640,9 @@ export function PlanManagement() {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="text-center">
-                    <div className="text-3xl font-bold">LKR {plan.price}</div>
+                    <div className="text-2xl sm:text-3xl font-bold">
+                      LKR {plan.price}
+                    </div>
                     <div className="text-sm text-muted-foreground">
                       per {plan.duration.toLowerCase()}
                     </div>
@@ -570,7 +666,7 @@ export function PlanManagement() {
                       {
                         memberPlans.filter(
                           (mp) =>
-                            mp.planType === plan.name && mp.status === "Active",
+                            mp.planType === plan.name && mp.status === "Active"
                         ).length
                       }{" "}
                       active members
@@ -579,7 +675,7 @@ export function PlanManagement() {
                       value={
                         (memberPlans.filter(
                           (mp) =>
-                            mp.planType === plan.name && mp.status === "Active",
+                            mp.planType === plan.name && mp.status === "Active"
                         ).length /
                           totalMembers) *
                         100
@@ -596,7 +692,7 @@ export function PlanManagement() {
 
       {/* Renewal Form Dialog */}
       <Dialog open={isRenewalFormOpen} onOpenChange={setIsRenewalFormOpen}>
-        <DialogContent className="max-w-2xl">
+        <DialogContent className="w-[95vw] max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Renew Membership Plan</DialogTitle>
             <DialogDescription>
