@@ -1,19 +1,25 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Textarea } from "@/components/ui/textarea"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Search } from "lucide-react"
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Search } from "lucide-react";
 
 interface AddPaymentFormProps {
-  onSubmit: (payment: any) => void
-  members: any[]
+  onSubmit: (payment: any) => void;
+  members: any[];
 }
 
 export function AddPaymentForm({ onSubmit, members }: AddPaymentFormProps) {
@@ -24,65 +30,94 @@ export function AddPaymentForm({ onSubmit, members }: AddPaymentFormProps) {
     period: "",
     method: "",
     notes: "",
-  })
-  const [memberSearch, setMemberSearch] = useState("")
-  const [showMemberList, setShowMemberList] = useState(false)
+  });
+  const [memberSearch, setMemberSearch] = useState("");
+  const [showMemberList, setShowMemberList] = useState(false);
 
   const filteredMembers = members.filter(
     (member) =>
-      member.name.toLowerCase().includes(memberSearch.toLowerCase()) ||
-      member.email.toLowerCase().includes(memberSearch.toLowerCase()),
-  )
+      (member.name ?? "").toLowerCase().includes(memberSearch.toLowerCase()) ||
+      (member.email ?? "").toLowerCase().includes(memberSearch.toLowerCase())
+  );
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!formData.memberId || !formData.amount || !formData.period || !formData.method) {
-      alert("Please fill in all required fields")
-      return
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (
+      !formData.memberId ||
+      !formData.amount ||
+      !formData.period ||
+      !formData.method
+    ) {
+      alert("Please fill in all required fields");
+      return;
     }
 
-    onSubmit({
-      ...formData,
-      amount: Number.parseFloat(formData.amount),
-    })
+    // Find the selected member to get gymId
+    const selectedMember = members.find((m) => m.id === formData.memberId);
+    const gymId = selectedMember?.gymId || "gym-001";
 
-    // Reset form
-    setFormData({
-      memberId: "",
-      memberName: "",
-      amount: "",
-      period: "",
-      method: "",
-      notes: "",
-    })
-    setMemberSearch("")
-  }
+    // Prepare payment data for backend
+    const paymentData = {
+      memberId: formData.memberId,
+      gymId,
+      amount: Number.parseFloat(formData.amount),
+      paymentDate: new Date().toISOString(),
+      method: formData.method,
+      notes: formData.notes,
+    };
+
+    const response = await fetch("http://localhost:5001/api/v1/payments", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(paymentData),
+    });
+
+    const data = await response.json();
+    if (response.ok) {
+      onSubmit(data);
+      setFormData({
+        memberId: "",
+        memberName: "",
+        amount: "",
+        period: "",
+        method: "",
+        notes: "",
+      });
+      setMemberSearch("");
+    } else {
+      alert(data.message || "Failed to record payment");
+    }
+  };
 
   const handleMemberSelect = (member: any) => {
     setFormData((prev) => ({
       ...prev,
       memberId: member.id,
       memberName: member.name,
-    }))
-    setMemberSearch(member.name)
-    setShowMemberList(false)
-  }
+    }));
+    setMemberSearch(member.name);
+    setShowMemberList(false);
+  };
 
   const handleChange = (field: string, value: string) => {
-    setFormData((prev) => ({ ...prev, [field]: value }))
-  }
+    setFormData((prev) => ({ ...prev, [field]: value }));
+  };
 
-  // Generate current and next month options
-  const currentDate = new Date()
-  const currentMonth = currentDate.toLocaleString("default", { month: "long", year: "numeric" })
-  const nextMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1).toLocaleString("default", {
+  const currentDate = new Date();
+  const currentMonth = currentDate.toLocaleString("default", {
     month: "long",
     year: "numeric",
-  })
+  });
+  const nextMonth = new Date(
+    currentDate.getFullYear(),
+    currentDate.getMonth() + 1
+  ).toLocaleString("default", {
+    month: "long",
+    year: "numeric",
+  });
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      {/* Member Selection */}
       <div className="space-y-2">
         <Label htmlFor="member">Select Member *</Label>
         <div className="relative">
@@ -92,8 +127,8 @@ export function AddPaymentForm({ onSubmit, members }: AddPaymentFormProps) {
               id="member"
               value={memberSearch}
               onChange={(e) => {
-                setMemberSearch(e.target.value)
-                setShowMemberList(true)
+                setMemberSearch(e.target.value);
+                setShowMemberList(true);
               }}
               onFocus={() => setShowMemberList(true)}
               placeholder="Search for a member..."
@@ -110,7 +145,10 @@ export function AddPaymentForm({ onSubmit, members }: AddPaymentFormProps) {
                   onClick={() => handleMemberSelect(member)}
                 >
                   <Avatar className="h-8 w-8">
-                    <AvatarImage src={member.avatar || "/placeholder.svg"} alt={member.name} />
+                    <AvatarImage
+                      src={member.avatar || "/placeholder.svg"}
+                      alt={member.name}
+                    />
                     <AvatarFallback>
                       {member.name
                         .split(" ")
@@ -120,7 +158,9 @@ export function AddPaymentForm({ onSubmit, members }: AddPaymentFormProps) {
                   </Avatar>
                   <div>
                     <div className="font-medium">{member.name}</div>
-                    <div className="text-sm text-muted-foreground">{member.email}</div>
+                    <div className="text-sm text-muted-foreground">
+                      {member.email}
+                    </div>
                   </div>
                 </div>
               ))}
@@ -130,10 +170,12 @@ export function AddPaymentForm({ onSubmit, members }: AddPaymentFormProps) {
       </div>
 
       <div className="grid gap-4 md:grid-cols-2">
-        {/* Time Period */}
         <div className="space-y-2">
           <Label htmlFor="period">Time Period *</Label>
-          <Select value={formData.period} onValueChange={(value) => handleChange("period", value)}>
+          <Select
+            value={formData.period}
+            onValueChange={(value) => handleChange("period", value)}
+          >
             <SelectTrigger>
               <SelectValue placeholder="Select billing period" />
             </SelectTrigger>
@@ -141,13 +183,16 @@ export function AddPaymentForm({ onSubmit, members }: AddPaymentFormProps) {
               <SelectItem value={currentMonth}>{currentMonth}</SelectItem>
               <SelectItem value={nextMonth}>{nextMonth}</SelectItem>
               <SelectItem value="Annual 2024">Annual 2024</SelectItem>
-              <SelectItem value="Quarterly Q2 2024">Quarterly Q2 2024</SelectItem>
-              <SelectItem value="Quarterly Q3 2024">Quarterly Q3 2024</SelectItem>
+              <SelectItem value="Quarterly Q2 2024">
+                Quarterly Q2 2024
+              </SelectItem>
+              <SelectItem value="Quarterly Q3 2024">
+                Quarterly Q3 2024
+              </SelectItem>
             </SelectContent>
           </Select>
         </div>
 
-        {/* Price */}
         <div className="space-y-2">
           <Label htmlFor="amount">Price *</Label>
           <Input
@@ -165,13 +210,18 @@ export function AddPaymentForm({ onSubmit, members }: AddPaymentFormProps) {
       {/* Payment Method */}
       <div className="space-y-2">
         <Label htmlFor="method">Payment Method *</Label>
-        <Select value={formData.method} onValueChange={(value) => handleChange("method", value)}>
+        <Select
+          value={formData.method}
+          onValueChange={(value) => handleChange("method", value)}
+        >
           <SelectTrigger>
             <SelectValue placeholder="Select payment method" />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="Payment Gateway">Payment Gateway</SelectItem>
-            <SelectItem value="Direct Bank Deposit">Direct Bank Deposit</SelectItem>
+            <SelectItem value="Direct Bank Deposit">
+              Direct Bank Deposit
+            </SelectItem>
             <SelectItem value="Cash">Cash</SelectItem>
             <SelectItem value="Credit Card">Credit Card</SelectItem>
             <SelectItem value="Check">Check</SelectItem>
@@ -198,5 +248,5 @@ export function AddPaymentForm({ onSubmit, members }: AddPaymentFormProps) {
         <Button type="submit">Record Payment</Button>
       </div>
     </form>
-  )
+  );
 }

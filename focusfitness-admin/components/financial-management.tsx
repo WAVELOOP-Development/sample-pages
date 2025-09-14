@@ -53,47 +53,52 @@ import {
 import { AddPaymentForm } from "@/components/add-payment-form";
 import { PaymentHistory } from "@/components/payment-history";
 
-// Mock members data for payment search
+// Mock member data
 const mockMembers = [
   {
     id: "1",
+    fullName: "Sarah Johnson",
     name: "Sarah Johnson",
     email: "sarah.johnson@email.com",
     plan: "Premium",
-    status: "Active",
-    avatar: "/diverse-woman-portrait.png",
+    gymId: "gym-001",
+    avatar: "https://mdbcdn.b-cdn.net/img/new/avatars/10.webp",
   },
   {
     id: "2",
+    fullName: "Mike Chen",
     name: "Mike Chen",
     email: "mike.chen@email.com",
     plan: "Basic",
-    status: "Active",
-    avatar: "/thoughtful-man.png",
+    gymId: "gym-001",
+    avatar: "https://mdbcdn.b-cdn.net/img/new/avatars/1.webp",
   },
   {
     id: "3",
+    fullName: "Emily Rodriguez",
     name: "Emily Rodriguez",
     email: "emily.rodriguez@email.com",
-    plan: "VIP",
-    status: "Active",
-    avatar: "/diverse-woman-portrait.png",
+    plan: "Premium",
+    gymId: "gym-001",
+    avatar: "https://mdbcdn.b-cdn.net/img/new/avatars/2.webp",
   },
   {
     id: "4",
+    fullName: "David Wilson",
     name: "David Wilson",
     email: "david.wilson@email.com",
-    plan: "Premium",
-    status: "Expired",
-    avatar: "/thoughtful-man.png",
+    plan: "Basic",
+    gymId: "gym-001",
+    avatar: "https://mdbcdn.b-cdn.net/img/new/avatars/3.webp",
   },
   {
     id: "5",
+    fullName: "Lisa Thompson",
     name: "Lisa Thompson",
     email: "lisa.thompson@email.com",
-    plan: "Basic",
-    status: "Active",
-    avatar: "/diverse-woman-portrait.png",
+    plan: "VIP",
+    gymId: "gym-001",
+    avatar: "https://mdbcdn.b-cdn.net/img/new/avatars/7.webp",
   },
 ];
 
@@ -108,7 +113,10 @@ const mockPayments = [
     method: "Credit Card",
     status: "Completed",
     date: "2024-06-01",
+    paymentDate: "2024-06-01",
     transactionId: "TXN-12345",
+    gymId: "gym-001",
+    avatar: "https://mdbcdn.b-cdn.net/img/new/avatars/10.webp",
   },
   {
     id: "PAY-002",
@@ -119,7 +127,10 @@ const mockPayments = [
     method: "Direct Bank Deposit",
     status: "Completed",
     date: "2024-06-05",
+    paymentDate: "2024-06-05",
     transactionId: "TXN-12346",
+    gymId: "gym-001",
+    avatar: "https://mdbcdn.b-cdn.net/img/new/avatars/1.webp",
   },
   {
     id: "PAY-003",
@@ -130,7 +141,10 @@ const mockPayments = [
     method: "Payment Gateway",
     status: "Completed",
     date: "2024-06-03",
+    paymentDate: "2024-06-03",
     transactionId: "TXN-12347",
+    gymId: "gym-001",
+    avatar: "https://mdbcdn.b-cdn.net/img/new/avatars/7.webp",
   },
   {
     id: "PAY-004",
@@ -141,7 +155,10 @@ const mockPayments = [
     method: "Credit Card",
     status: "Completed",
     date: "2024-05-01",
+    paymentDate: "2024-05-01",
     transactionId: "TXN-12348",
+    gymId: "gym-001",
+    avatar: "https://mdbcdn.b-cdn.net/img/new/avatars/8.webp",
   },
   {
     id: "PAY-005",
@@ -152,12 +169,30 @@ const mockPayments = [
     method: "Cash",
     status: "Completed",
     date: "2024-06-10",
+    paymentDate: "2024-06-10",
     transactionId: "TXN-12349",
+    gymId: "gym-001",
+    avatar: "https://mdbcdn.b-cdn.net/img/new/avatars/3.webp",
+  },
+  {
+    id: "PAY-006",
+    memberId: "4",
+    memberName: "David Wilson",
+    amount: 2000,
+    period: "June 2024",
+    method: "Credit Card",
+    status: "Pending",
+    date: "2024-06-12",
+    paymentDate: "2024-06-12",
+    transactionId: "TXN-12350",
+    gymId: "gym-001",
+    avatar: "https://mdbcdn.b-cdn.net/img/new/avatars/5.webp",
   },
 ];
 
 export function FinancialManagement() {
-  const [payments, setPayments] = useState(mockPayments);
+  const [members, setMembers] = useState<any[]>([]);
+  const [payments, setPayments] = useState<any[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedMember, setSelectedMember] = useState<any>(null);
   const [isAddPaymentDialogOpen, setIsAddPaymentDialogOpen] = useState(false);
@@ -166,19 +201,46 @@ export function FinancialManagement() {
   const [paymentMethodFilter, setPaymentMethodFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
 
-  const filteredMembers = mockMembers.filter(
+  useEffect(() => {
+    // Use mock data instead of API calls
+    setMembers(mockMembers);
+    setPayments(mockPayments);
+  }, []);
+
+  const filteredMembers = members.filter(
     (member) =>
-      member.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      member.email.toLowerCase().includes(searchTerm.toLowerCase()),
+      member.fullName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      member.email?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const filteredPayments = payments.filter((payment) => {
-    const matchesMethod =
-      paymentMethodFilter === "all" ||
-      payment.method.toLowerCase().includes(paymentMethodFilter);
-    const matchesStatus =
-      statusFilter === "all" || payment.status.toLowerCase() === statusFilter;
-    return matchesMethod && matchesStatus;
+  const filteredPayments = payments
+    .filter((payment) => payment.gymId === "gym-001")
+    .filter((payment) => {
+      const matchesMethod =
+        paymentMethodFilter === "all" ||
+        payment.method.toLowerCase().includes(paymentMethodFilter);
+      const matchesStatus =
+        statusFilter === "all" || payment.status.toLowerCase() === statusFilter;
+      return matchesMethod && matchesStatus;
+    });
+
+  const mappedPayments = filteredPayments.map((payment) => {
+    // Get member name from members list
+    const member = members.find((m) => m.id === payment.memberId);
+    // Format period from paymentDate
+    const period = payment.paymentDate
+      ? new Date(payment.paymentDate).toLocaleString("default", {
+          month: "long",
+          year: "numeric",
+        })
+      : "";
+    return {
+      ...payment,
+      memberName: member?.name || payment.memberName || "",
+      period,
+      status: payment.status || "Completed",
+      date: payment.paymentDate || payment.date,
+    };
   });
 
   const getPaymentMethodIcon = (method: string) => {
@@ -196,6 +258,9 @@ export function FinancialManagement() {
   };
 
   const getStatusBadge = (status: string) => {
+    if (!status || typeof status !== "string") {
+      return <Badge variant="secondary">Unknown</Badge>;
+    }
     switch (status.toLowerCase()) {
       case "completed":
         return (
@@ -221,28 +286,33 @@ export function FinancialManagement() {
     setIsPaymentHistoryDialogOpen(true);
   };
 
-  const handleAddPayment = (paymentData: any) => {
+  const handleAddPayment = async (paymentData: any) => {
+    // Create a new payment with mock data
     const newPayment = {
+      id: `PAY-${String(payments.length + 1).padStart(3, "0")}`,
       ...paymentData,
-      id: `PAY-${(payments.length + 1).toString().padStart(3, "0")}`,
       status: "Completed",
       date: new Date().toISOString().split("T")[0],
-      transactionId: `TXN-${Math.random().toString(36).substr(2, 9).toUpperCase()}`,
+      paymentDate: new Date().toISOString().split("T")[0],
+      transactionId: `TXN-${Math.random().toString(36).substr(2, 9)}`,
+      gymId: "gym-001",
     };
-    setPayments([newPayment, ...payments]);
+
+    // Add the new payment to the existing payments
+    setPayments((prevPayments) => [...prevPayments, newPayment]);
     setIsAddPaymentDialogOpen(false);
   };
 
   // Calculate financial metrics
   const totalRevenue = payments.reduce(
     (sum, payment) => sum + payment.amount,
-    0,
+    0
   );
   const monthlyRevenue = payments
-    .filter((payment) => payment.date.startsWith("2024-06"))
+    .filter((payment) => (payment.date ?? "").startsWith("2024-06"))
     .reduce((sum, payment) => sum + payment.amount, 0);
   const completedPayments = payments.filter(
-    (payment) => payment.status === "Completed",
+    (payment) => payment.status === "Completed"
   ).length;
   const averagePayment = totalRevenue / payments.length;
 
@@ -272,7 +342,7 @@ export function FinancialManagement() {
                 Record a new payment transaction for a member.
               </DialogDescription>
             </DialogHeader>
-            <AddPaymentForm onSubmit={handleAddPayment} members={mockMembers} />
+            <AddPaymentForm onSubmit={handleAddPayment} members={members} />
           </DialogContent>
         </Dialog>
       </div>
@@ -377,10 +447,11 @@ export function FinancialManagement() {
                                 alt={member.name}
                               />
                               <AvatarFallback>
-                                {member.name
+                                {(member.name ?? "")
                                   .split(" ")
-                                  .map((n) => n[0])
-                                  .join("")}
+                                  .map((n: string) => n[0])
+                                  .filter(Boolean)
+                                  .join("") || "?"}
                               </AvatarFallback>
                             </Avatar>
                             <div>
@@ -473,7 +544,7 @@ export function FinancialManagement() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {filteredPayments.map((payment) => (
+                  {mappedPayments.map((payment) => (
                     <TableRow key={payment.id}>
                       <TableCell className="font-medium">
                         {payment.id}
@@ -481,7 +552,7 @@ export function FinancialManagement() {
                       <TableCell>{payment.memberName}</TableCell>
                       <TableCell>{payment.period}</TableCell>
                       <TableCell className="font-medium">
-                        LKR {payment.amount.toFixed(2)}
+                        LKR {(Number(payment.amount) || 0).toFixed(2)}
                       </TableCell>
                       <TableCell>
                         <div className="flex items-center gap-2">
@@ -491,7 +562,9 @@ export function FinancialManagement() {
                       </TableCell>
                       <TableCell>{getStatusBadge(payment.status)}</TableCell>
                       <TableCell>
-                        {new Date(payment.date).toLocaleDateString()}
+                        {payment.date
+                          ? new Date(payment.date).toLocaleDateString()
+                          : ""}
                       </TableCell>
                     </TableRow>
                   ))}
@@ -562,7 +635,7 @@ function CustomDialog({ open, onOpenChange, children }: CustomDialogProps) {
       setTimeout(() => {
         if (dialogRef.current) {
           const firstFocusable = dialogRef.current.querySelector(
-            'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
+            'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
           ) as HTMLElement;
           firstFocusable?.focus();
         }
@@ -603,7 +676,7 @@ function CustomDialog({ open, onOpenChange, children }: CustomDialogProps) {
         {children}
       </div>
     </div>,
-    document.body,
+    document.body
   );
 }
 

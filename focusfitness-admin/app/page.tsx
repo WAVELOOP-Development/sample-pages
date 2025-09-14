@@ -8,8 +8,8 @@ export default function HomePage() {
 
   useEffect(() => {
     // Check if user is authenticated
-    const auth = localStorage.getItem("focusfitness_auth")
-    if (auth === "true") {
+    const token = localStorage.getItem("focusfitness_auth")
+    if (token) {
       router.push("/dashboard")
     } else {
       router.push("/login")

@@ -15,8 +15,8 @@ export function AuthGuard({ children }: AuthGuardProps) {
 
   useEffect(() => {
     const checkAuth = () => {
-      const auth = localStorage.getItem("focusfitness_auth")
-      if (auth === "true") {
+      const token = localStorage.getItem("focusfitness_auth")
+      if (token) {
         setIsAuthenticated(true)
       } else {
         setIsAuthenticated(false)

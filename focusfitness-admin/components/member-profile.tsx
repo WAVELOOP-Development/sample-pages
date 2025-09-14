@@ -83,7 +83,8 @@ export function MemberProfile({ member }: MemberProfileProps) {
     }
   };
 
-  const getPlanBadge = (plan: string) => {
+  const getPlanBadge = (plan?: string) => {
+    if (!plan) return <Badge variant="secondary">No Plan</Badge>;
     switch (plan.toLowerCase()) {
       case "vip":
         return (
@@ -110,11 +111,11 @@ export function MemberProfile({ member }: MemberProfileProps) {
       <div className="flex items-start gap-6 ">
         <Avatar className="h-20 w-20">
           <AvatarImage
-            src={member.avatar || "/placeholder.svg"}
-            alt={member.name}
+            src={member.imageUrl || "/placeholder.svg"}
+            alt={member.fullName}
           />
           <AvatarFallback className="text-lg">
-            {member.name
+            {member.fullName
               .split(" ")
               .map((n: string) => n[0])
               .join("")}
@@ -122,9 +123,9 @@ export function MemberProfile({ member }: MemberProfileProps) {
         </Avatar>
         <div className="flex-1">
           <div className="flex items-center gap-3 mb-2">
-            <h2 className="text-2xl font-bold">{member.name}</h2>
+            <h2 className="text-2xl font-bold">{member.fullName}</h2>
             {getStatusBadge(member.status)}
-            {getPlanBadge(member.plan)}
+            {getPlanBadge(member.planName)}
           </div>
           <div className="space-y-1 text-sm text-muted-foreground">
             <div className="flex items-center gap-2">
@@ -133,12 +134,8 @@ export function MemberProfile({ member }: MemberProfileProps) {
             </div>
             <div className="flex items-center gap-2">
               <Phone className="h-4 w-4" />
-              {member.phone}
+              {member.phoneNumber}
             </div>
-            {/*<div className="flex items-center gap-2">
-              <Calendar className="h-4 w-4" />
-              Member since {new Date(member.joinDate).toLocaleDateString()}
-            </div>*/}
           </div>
         </div>
         {/*<Button>
@@ -164,7 +161,7 @@ export function MemberProfile({ member }: MemberProfileProps) {
               <label className="text-sm font-medium text-muted-foreground">
                 Full Name
               </label>
-              <p className="text-sm">{member.name}</p>
+              <p className="text-sm">{member.fullName}</p>
             </div>
             <div>
               <label className="text-sm font-medium text-muted-foreground">
@@ -176,13 +173,31 @@ export function MemberProfile({ member }: MemberProfileProps) {
               <label className="text-sm font-medium text-muted-foreground">
                 Phone
               </label>
-              <p className="text-sm">{member.phone}</p>
+              <p className="text-sm">{member.phoneNumber}</p>
             </div>
             <div>
               <label className="text-sm font-medium text-muted-foreground">
                 Emergency Contact
               </label>
-              <p className="text-sm">John Johnson - +1 (555) 987-6543</p>
+              <p className="text-sm">
+                {member.emergencyName && member.emergencyNumber
+                  ? `${member.emergencyName} - (${member.emergencyNumber})`
+                  : "N/A"}
+              </p>
+            </div>
+            <div>
+              <label className="text-sm font-medium text-muted-foreground">
+                Next Payment
+              </label>
+              <p className="text-sm">
+                {member.startDate
+                  ? new Date(
+                      new Date(member.startDate).setMonth(
+                        new Date(member.startDate).getMonth() + 1
+                      )
+                    ).toLocaleDateString()
+                  : "N/A"}
+              </p>
             </div>
           </CardContent>
         </Card>
@@ -200,27 +215,31 @@ export function MemberProfile({ member }: MemberProfileProps) {
               <label className="text-sm font-medium text-muted-foreground">
                 Plan
               </label>
-              <p className="text-sm">{member.plan}</p>
+              <p className="text-sm">{member.planName}</p>
             </div>
-            {/*<div>
-              <label className="text-sm font-medium text-muted-foreground">
-                Status
-              </label>
-              <p className="text-sm">{member.status}</p>
-            </div>*/}
             <div>
               <label className="text-sm font-medium text-muted-foreground">
                 Join Date
               </label>
               <p className="text-sm">
-                {new Date(member.joinDate).toLocaleDateString()}
+                {member.startDate
+                  ? new Date(member.startDate).toLocaleDateString()
+                  : "N/A"}
               </p>
             </div>
             <div>
               <label className="text-sm font-medium text-muted-foreground">
                 Next Payment
               </label>
-              <p className="text-sm">July 1, 2024</p>
+              <p className="text-sm">
+                {member.startDate
+                  ? new Date(
+                      new Date(member.startDate).setMonth(
+                        new Date(member.startDate).getMonth() + 1
+                      )
+                    ).toLocaleDateString()
+                  : "N/A"}
+              </p>
             </div>
           </CardContent>
         </Card>

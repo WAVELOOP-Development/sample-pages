@@ -55,9 +55,9 @@ const revenueData = [
 ];
 
 const membershipData = [
-  { name: "Basic", value: 45, color: "#6366f1" },
-  { name: "Premium", value: 35, color: "#4f46e5" },
-  { name: "VIP", value: 20, color: "#3b82f6" },
+  { name: "Basic", value: 45, color: "#b2b2b2" },
+  { name: "Premium", value: 35, color: "#E54E25" },
+  { name: "VIP", value: 20, color: "#000000" },
 ];
 
 const COLORS = ["#6366f1", "#4f46e5", "#3b82f6"];
@@ -92,6 +92,12 @@ export function DashboardOverview() {
   const router = useRouter();
   return (
     <div className="space-y-6">
+      <div>
+        <h1 className="text-3xl font-bold">Dashboard</h1>
+        <p className="text-muted-foreground">
+          Welcome back! Here's what's happening at your gym today.
+        </p>
+      </div>
       {/* Key Metrics Cards */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>
@@ -172,6 +178,7 @@ export function DashboardOverview() {
                   dataKey="members"
                   fill="hsl(var(--primary))"
                   barSize={60}
+                  radius={[5, 5, 0, 0]}
                 />
               </BarChart>
             </ResponsiveContainer>
@@ -198,10 +205,7 @@ export function DashboardOverview() {
                     dataKey="value"
                   >
                     {membershipData.map((entry, index) => (
-                      <Cell
-                        key={`cell-${entry.name}`}
-                        fill={COLORS[index % COLORS.length]}
-                      />
+                      <Cell key={`cell-${entry.name}`} fill={entry.color} />
                     ))}
                   </Pie>
                   <Tooltip />
@@ -212,7 +216,7 @@ export function DashboardOverview() {
                   <div key={entry.name} className="flex items-center gap-2">
                     <div
                       className="w-3 h-3 rounded-full"
-                      style={{ backgroundColor: COLORS[index] }}
+                      style={{ backgroundColor: entry.color }}
                     />
                     <span className="text-sm">
                       {entry.name}: {entry.value}%
